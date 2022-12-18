@@ -48,7 +48,7 @@ public class CarsServlet extends HttpServlet {
             String brand = (String) jsonObject.get("brand");
             carsInfo.put(id, brand);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
