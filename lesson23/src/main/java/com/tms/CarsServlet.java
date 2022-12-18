@@ -3,12 +3,12 @@ package com.tms;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -38,13 +38,13 @@ public class CarsServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Scanner scanner = new Scanner(req.getInputStream(), "UTF-8");
+        Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8);
         String body = scanner.hasNext() ? scanner.useDelimiter("\\A").next() : "";
         System.out.println("body: " + body);
         JSONParser jsonParser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(body);
-            String id = (String) jsonObject.get("id");
+            String id = String.valueOf(jsonObject.get("id"));
             String brand = (String) jsonObject.get("brand");
             carsInfo.put(id, brand);
         } catch (ParseException e) {
