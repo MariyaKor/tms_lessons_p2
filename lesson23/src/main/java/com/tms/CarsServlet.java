@@ -21,7 +21,7 @@ public class CarsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
         if (req.getParameter("id") != null) {
-            outputStream.println("brand = " + carsInfo.get("id"));
+            outputStream.println("cost = " + carsInfo.get("id"));
         } else {
             outputStream.println("cars  " + carsInfo);
         }
@@ -32,8 +32,8 @@ public class CarsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String id = req.getParameter("id");
-        String brand = req.getParameter("brand");
-        carsInfo.put(id, brand);
+        String cost = req.getParameter("cost");
+        carsInfo.put(id, cost);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class CarsServlet extends HttpServlet {
         try {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(body);
             String id = String.valueOf(jsonObject.get("id"));
-            String brand = (String) jsonObject.get("brand");
-            carsInfo.put(id, brand);
+            String cost = (String) jsonObject.get("cost");
+            carsInfo.put(id, cost);
         } catch (ParseException e) {
             e.printStackTrace();
         }
