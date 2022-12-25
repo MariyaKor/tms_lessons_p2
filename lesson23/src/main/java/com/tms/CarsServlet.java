@@ -3,8 +3,10 @@ package com.tms;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +32,7 @@ public class CarsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
+        outputStream.println(getLastDateTimeAccess(req));
         outputStream.println("In CarsServlet! ");
         String id = req.getParameter("id");
         if (id != null) {
@@ -38,6 +41,25 @@ public class CarsServlet extends HttpServlet {
             outputStream.println("cars: " + carsInfo);
         }
         outputStream.close();
+    }
+
+    private String getLastDateTimeAccess(HttpServletRequest req) throws IOException {
+        String value = null;
+        Cookie[] cookies = req.getCookies();
+        String cookieName = "lastAccessTime";
+        Cookie cookie = null;
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (cookieName.equals(c.getName())) {
+                    cookie = c;
+                    break;
+                }
+            }
+        }
+        if (cookie != null) {
+            value = cookie.getValue();
+        }
+        return value;
     }
 
 
