@@ -34,7 +34,6 @@ public class CarsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
         outputStream.println(getLastDateTimeAccess(req));
-        outputStream.println("In CarsServlet! ");
         String id = req.getParameter("id");
         if (id != null) {
             outputStream.println("cost = " + carsInfo.get(id));
