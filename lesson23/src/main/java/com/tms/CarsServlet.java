@@ -14,7 +14,15 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@WebServlet(urlPatterns ={"/cars"})
+/**
+ * Создать сервлет, который будет использоваться для получение и сохранения данных о машинах. Он должен:
+ * a. Получать список всех машин
+ * b. Получить машину по ее id
+ * c. Сохранить данные о новой машине
+ * d. Обновить данные существующей машины
+ * e. Удалить машину.
+ */
+@WebServlet(urlPatterns = {"/cars"})
 public class CarsServlet extends HttpServlet {
 
     private ConcurrentMap<String, String> carsInfo = new ConcurrentHashMap<>();
@@ -22,11 +30,12 @@ public class CarsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
+        outputStream.println("In CarsServlet! ");
         String id = req.getParameter("id");
         if (id != null) {
             outputStream.println("cost = " + carsInfo.get(id));
         } else {
-            outputStream.println("cars  " + carsInfo);
+            outputStream.println("cars: " + carsInfo);
         }
         outputStream.close();
     }

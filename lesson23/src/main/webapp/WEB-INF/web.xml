@@ -12,6 +12,27 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>cars</servlet-name>
-        <url-pattern>/cars</url-pattern>
+        <url-pattern>/cars-example</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>book</servlet-name>
+        <servlet-class>com.tms.BookServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>book</servlet-name>
+        <url-pattern>/book-example</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>headerFilter</filter-name>
+        <filter-class>com.tms.filter.HeaderFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>headerFilter</filter-name>
+        <url-pattern>/cars-example</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>com.tms.listener.SessionListener</listener-class>
+    </listener>
+
 </web-app>
