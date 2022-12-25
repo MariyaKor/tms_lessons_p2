@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@WebServlet(urlPatterns ={"/cars"})
 public class CarsServlet extends HttpServlet {
 
     private ConcurrentMap<String, String> carsInfo = new ConcurrentHashMap<>();
@@ -20,8 +22,9 @@ public class CarsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
-        if (req.getParameter("id") != null) {
-            outputStream.println("cost = " + carsInfo.get("id"));
+        String id = req.getParameter("id");
+        if (id != null) {
+            outputStream.println("cost = " + carsInfo.get(id));
         } else {
             outputStream.println("cars  " + carsInfo);
         }
