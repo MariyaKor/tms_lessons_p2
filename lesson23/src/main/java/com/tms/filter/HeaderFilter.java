@@ -17,16 +17,19 @@ public class HeaderFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (isExceptionNeeded((HttpServletRequest) request)) {
+        if (isNotGetMethod((HttpServletRequest) request) && isParamNotExists((HttpServletRequest) request)) {
             throw (new ServletException("Please fill in Client-Login"));
         }
         chain.doFilter(request, response);
     }
 
-    private boolean isExceptionNeeded(HttpServletRequest request) {
-        return (request.getHeader("Client-Login") == null
-                || request.getHeader("Client-Login").isBlank())
-                && !"GET".equalsIgnoreCase(request.getMethod());
+    private boolean isParamNotExists(HttpServletRequest request) {
+        return request.getHeader("Client-Login") == null
+                || request.getHeader("Client-Login").isBlank();
+    }
+
+    private boolean isNotGetMethod(HttpServletRequest request) {
+        return !"GET".equalsIgnoreCase(request.getMethod());
     }
 
     @Override

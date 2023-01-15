@@ -1,20 +1,16 @@
 package com.tms;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
+import com.tms.model.Car;
+import com.tms.service.impl.CookieServiceImpl;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 
 /**
  * 1.Создать сервлет, который будет использоваться для получение и сохранения данных о машинах. Он должен:
@@ -28,68 +24,73 @@ import java.util.concurrent.ConcurrentMap;
 @WebServlet(urlPatterns = {"/cars"})
 public class CarsServlet extends HttpServlet {
 
-    private ConcurrentMap<String, String> carsInfo = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, Car> cars = new ConcurrentHashMap<>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream outputStream = resp.getOutputStream();
-        outputStream.println(getLastDateTimeAccess(req));
+        outputStream.println(new CookieServiceImpl().getLastDateTimeAccess(req));
         String id = req.getParameter("id");
-        if (id != null) {
-            outputStream.println("cost = " + carsInfo.get(id));
+        if (id == null) {
+            outputStream.println("cars: " + cars);
+        } else if (id.isBlank() || cars.get(id) == null) {
+            resp.setStatus(400);
+            outputStream.println("Specified id isn't valid");
         } else {
-            outputStream.println("cars: " + carsInfo);
+            outputStream.println("cars " + cars.get(id));
         }
         outputStream.close();
     }
 
-    private String getLastDateTimeAccess(HttpServletRequest req) throws IOException {
-        String value = null;
-        Cookie[] cookies = req.getCookies();
-        String cookieName = "lastAccessTime";
-        Cookie cookie = null;
-        if (cookies != null) {
-            for (Cookie c : cookies) {
-                if (cookieName.equals(c.getName())) {
-                    cookie = c;
-                    break;
-                }
-            }
-        }
-        if (cookie != null) {
-            value = cookie.getValue();
-        }
-        return value;
-    }
-
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ServletOutputStream outputStream = resp.getOutputStream();
         String id = req.getParameter("id");
-        String cost = req.getParameter("cost");
-        carsInfo.put(id, cost);
+        if (id == null || id.isBlank()) {
+            resp.setStatus(400);
+            outputStream.println("Specified id isn't valid");
+        } else if (cars.get(id) != null) {
+            resp.setStatus(422);
+            outputStream.println("Car with this id already exists");
+        } else {
+            String model = req.getParameter("model");
+            String cost = req.getParameter("cost");
+            cars.put(id, new Car(model, cost));
+        }
+        outputStream.close();
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8);
-        String body = scanner.hasNext() ? scanner.useDelimiter("\\A").next() : "";
-        System.out.println("body: " + body);
-        JSONParser jsonParser = new JSONParser();
-        try {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(body);
-            String id = String.valueOf(jsonObject.get("id"));
-            String cost = (String) jsonObject.get("cost");
-            carsInfo.put(id, cost);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        ServletOutputStream outputStream = resp.getOutputStream();
+        String id = req.getParameter("id");
+        if (id == null || id.isBlank()) {
+            resp.setStatus(400);
+            outputStream.println("Specified id isn't valid");
+        } else if (cars.get(id) == null) {
+            resp.setStatus(422);
+            outputStream.println("Car with this id doesn't exists");
+        } else {
+            String model = req.getParameter("model");
+            String cost = req.getParameter("cost");
+            cars.put(id, new Car(model, cost));
         }
+        outputStream.close();
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ServletOutputStream outputStream = resp.getOutputStream();
         String id = req.getParameter("id");
-        carsInfo.remove(id);
+        if (id == null || id.isBlank()) {
+            resp.setStatus(400);
+            outputStream.println("Specified id isn't valid");
+        } else if (cars.get(id) == null) {
+            resp.setStatus(422);
+            outputStream.println("Car with this id doesn't exists");
+        } else {
+            cars.remove(id);
+        }
+        outputStream.close();
     }
-
 }
