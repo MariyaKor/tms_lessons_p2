@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     Copyright 2002 Sun Microsystems, Inc. All rights reserved.
+-->
+<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web
+     Application 2.3//EN' 'http://java.sun.com/dtd/web-app_2_3.dtd'>
+
+<web-app>
+    <servlet>
+        <servlet-name>cars</servlet-name>
+        <servlet-class>com.tms.CarsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cars</servlet-name>
+        <url-pattern>/cars-example</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>book</servlet-name>
+        <servlet-class>com.tms.BookServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>book</servlet-name>
+        <url-pattern>/book-example</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>headerFilter</filter-name>
+        <filter-class>com.tms.filter.HeaderFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>headerFilter</filter-name>
+        <url-pattern>/cars-example</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>com.tms.listener.SessionListener</listener-class>
+    </listener>
+
+</web-app>
